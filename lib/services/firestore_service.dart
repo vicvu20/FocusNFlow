@@ -6,10 +6,12 @@ import '../models/user_model.dart';
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
+  // USERS
   Future<void> createUserProfile(AppUser user) async {
     await _db.collection('users').doc(user.uid).set(user.toMap());
   }
 
+  // TASKS
   Future<void> addTask(String uid, Task task) async {
     await _db
         .collection('users')
@@ -40,6 +42,7 @@ class FirestoreService {
         .delete();
   }
 
+  // STUDY PLANNER
   List<Task> generateStudyPlan(List<Task> tasks) {
     final now = DateTime.now();
 
@@ -62,6 +65,7 @@ class FirestoreService {
     return deadlineScore + effortScore + weightScore;
   }
 
+  // ROOMS
   Stream<QuerySnapshot<Map<String, dynamic>>> getStudyRooms() {
     return _db.collection('rooms').snapshots();
   }
@@ -92,5 +96,39 @@ class FirestoreService {
         'occupancy': current > 0 ? current - 1 : 0,
       });
     });
+  }
+
+  // 🔥 GROUPS
+  Future<void> createGroup(String name) async {
+    await _db.collection('groups').add({
+      'name': name,
+      'createdAt': Timestamp.now(),
+    });
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getGroups() {
+    return _db.collection('groups').snapshots();
+  }
+
+  // 🔥 CHAT
+  Future<void> sendMessage(String groupId, String message) async {
+    await _db
+        .collection('groups')
+        .doc(groupId)
+        .collection('messages')
+        .add({
+      'text': message,
+      'createdAt': Timestamp.now(),
+    });
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getMessages(
+      String groupId) {
+    return _db
+        .collection('groups')
+        .doc(groupId)
+        .collection('messages')
+        .orderBy('createdAt')
+        .snapshots();
   }
 }

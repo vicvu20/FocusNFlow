@@ -4,6 +4,7 @@ import '../services/auth_service.dart';
 import 'tasks/tasks_screen.dart';
 import 'planner/planner_screen.dart';
 import 'rooms/rooms_screen.dart';
+import 'groups/groups_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   static const String routeName = '/dashboard';
@@ -33,9 +34,9 @@ class DashboardScreen extends StatelessWidget {
       ),
       _DashboardCard(
         title: 'Study Groups',
-        subtitle: 'Coming next',
+        subtitle: 'Create groups and chat in real time',
         icon: Icons.groups,
-        routeName: null,
+        routeName: GroupsScreen.routeName,
       ),
       _DashboardCard(
         title: 'Pomodoro Timer',
@@ -59,6 +60,7 @@ class DashboardScreen extends StatelessWidget {
           IconButton(
             onPressed: () async {
               await AuthService().signOut();
+
               if (context.mounted) {
                 Navigator.pushNamedAndRemoveUntil(
                   context,

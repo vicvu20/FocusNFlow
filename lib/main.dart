@@ -8,6 +8,7 @@ import 'screens/dashboard_screen.dart';
 import 'screens/tasks/tasks_screen.dart';
 import 'screens/planner/planner_screen.dart';
 import 'screens/rooms/rooms_screen.dart';
+import 'screens/groups/groups_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,9 +39,8 @@ class FocusNFlowApp extends StatelessWidget {
         DashboardScreen.routeName: (context) => const DashboardScreen(),
         TasksScreen.routeName: (context) => const TasksScreen(),
         PlannerScreen.routeName: (context) => const PlannerScreen(),
-
-        //  FIXED (removed const)
-        RoomsScreen.routeName: (context) => RoomsScreen(),
+        RoomsScreen.routeName: (context) => const RoomsScreen(),
+        GroupsScreen.routeName: (context) => const GroupsScreen(),
       },
     );
   }
