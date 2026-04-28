@@ -11,6 +11,12 @@ class FirestoreService {
     await _db.collection('users').doc(user.uid).set(user.toMap());
   }
 
+  Future<void> saveFcmToken(String uid, String token) async {
+    await _db.collection('users').doc(uid).update({
+      'fcmToken': token,
+    });
+  }
+
   // TASKS
   Future<void> addTask(String uid, Task task) async {
     await _db
@@ -131,7 +137,7 @@ class FirestoreService {
         .snapshots();
   }
 
-  // SESSIONS (calendar + reminders)
+  // SESSIONS
   Future<void> createSession({
     required String groupId,
     required String title,
