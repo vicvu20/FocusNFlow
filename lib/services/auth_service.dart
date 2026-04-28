@@ -1,4 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import '../models/user_model.dart';
+import 'firestore_service.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -22,10 +26,24 @@ class AuthService {
       throw Exception('Please use a valid campus email address.');
     }
 
-    return _auth.createUserWithEmailAndPassword(
+    final credential = await _auth.createUserWithEmailAndPassword(
       email: email.trim(),
       password: password.trim(),
     );
+
+    final user = credential.user;
+
+    if (user != null) {
+      final newUser = AppUser(
+        uid: user.uid,
+        email: user.email ?? '',
+        createdAt: Timestamp.now().toDate().toString(),
+      );
+
+      await FirestoreService().createUserProfile(newUser);
+    }
+
+    return credential;
   }
 
   Future<UserCredential> signIn({
