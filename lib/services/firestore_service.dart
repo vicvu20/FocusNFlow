@@ -6,12 +6,10 @@ import '../models/user_model.dart';
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  // USERS
   Future<void> createUserProfile(AppUser user) async {
     await _db.collection('users').doc(user.uid).set(user.toMap());
   }
 
-  // TASKS
   Future<void> addTask(String uid, Task task) async {
     await _db
         .collection('users')
@@ -42,7 +40,6 @@ class FirestoreService {
         .delete();
   }
 
-  // STUDY PLANNER LOGIC
   List<Task> generateStudyPlan(List<Task> tasks) {
     final now = DateTime.now();
 
@@ -63,5 +60,37 @@ class FirestoreService {
     final weightScore = task.weight * 4;
 
     return deadlineScore + effortScore + weightScore;
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getStudyRooms() {
+    return _db.collection('rooms').snapshots();
+  }
+
+  Future<void> joinRoom(String roomId) async {
+    final roomRef = _db.collection('rooms').doc(roomId);
+
+    await _db.runTransaction((transaction) async {
+      final snapshot = await transaction.get(roomRef);
+      final data = snapshot.data() ?? {};
+      final current = data['occupancy'] ?? 0;
+
+      transaction.update(roomRef, {
+        'occupancy': current + 1,
+      });
+    });
+  }
+
+  Future<void> leaveRoom(String roomId) async {
+    final roomRef = _db.collection('rooms').doc(roomId);
+
+    await _db.runTransaction((transaction) async {
+      final snapshot = await transaction.get(roomRef);
+      final data = snapshot.data() ?? {};
+      final current = data['occupancy'] ?? 0;
+
+      transaction.update(roomRef, {
+        'occupancy': current > 0 ? current - 1 : 0,
+      });
+    });
   }
 }
