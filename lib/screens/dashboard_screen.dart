@@ -28,7 +28,7 @@ class DashboardScreen extends StatelessWidget {
       ),
       _DashboardCard(
         title: 'Study Rooms',
-        subtitle: 'View real-time room occupancy',
+        subtitle: 'View real-time GSU study room occupancy',
         icon: Icons.meeting_room,
         routeName: RoomsScreen.routeName,
       ),
@@ -54,8 +54,7 @@ class DashboardScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('FocusNFlow Dashboard'),
-        centerTitle: true,
+        title: const Text('FocusNFlow'),
         actions: [
           IconButton(
             onPressed: () async {
@@ -73,37 +72,72 @@ class DashboardScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: cards.length,
-        itemBuilder: (context, index) {
-          final card = cards[index];
-
-          return Card(
-            margin: const EdgeInsets.only(bottom: 14),
-            child: ListTile(
-              leading: CircleAvatar(
-                child: Icon(card.icon),
-              ),
-              title: Text(
-                card.title,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              subtitle: Text(card.subtitle),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {
-                if (card.routeName == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('${card.title} coming soon')),
-                  );
-                  return;
-                }
-
-                Navigator.pushNamed(context, card.routeName!);
-              },
+      body: ListView(
+        padding: const EdgeInsets.only(bottom: 16),
+        children: [
+          Container(
+            margin: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: const Color(0xFF0039A6),
+              borderRadius: BorderRadius.circular(22),
             ),
-          );
-        },
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Welcome, Panther',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'Plan your week, find study rooms, and work with your group.',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          ...cards.map((card) {
+            return Card(
+              child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 18,
+                  vertical: 10,
+                ),
+                leading: CircleAvatar(
+                  backgroundColor: const Color(0xFFE8EEFF),
+                  child: Icon(
+                    card.icon,
+                    color: const Color(0xFF0039A6),
+                  ),
+                ),
+                title: Text(
+                  card.title,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text(card.subtitle),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                onTap: () {
+                  if (card.routeName == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('${card.title} coming soon')),
+                    );
+                    return;
+                  }
+
+                  Navigator.pushNamed(context, card.routeName!);
+                },
+              ),
+            );
+          }),
+        ],
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'firebase_options.dart';
 import 'screens/auth/auth_gate.dart';
@@ -11,7 +12,6 @@ import 'screens/planner/planner_screen.dart';
 import 'screens/rooms/rooms_screen.dart';
 import 'screens/groups/groups_screen.dart';
 import 'services/firestore_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {}
 
@@ -42,12 +42,11 @@ class _FocusNFlowAppState extends State<FocusNFlowApp> {
   }
 
   Future<void> _initFCM() async {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    final FirebaseMessaging messaging = FirebaseMessaging.instance;
 
     await messaging.requestPermission();
 
-    String? token = await messaging.getToken();
-
+    final String? token = await messaging.getToken();
     final user = FirebaseAuth.instance.currentUser;
 
     if (token != null && user != null) {
@@ -57,12 +56,48 @@ class _FocusNFlowAppState extends State<FocusNFlowApp> {
 
   @override
   Widget build(BuildContext context) {
+    const Color gsuBlue = Color(0xFF0039A6);
+
     return MaterialApp(
       title: 'FocusNFlow',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: gsuBlue,
+          primary: gsuBlue,
+        ),
+        scaffoldBackgroundColor: const Color(0xFFF5F7FB),
         useMaterial3: true,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: gsuBlue,
+          foregroundColor: Colors.white,
+          centerTitle: true,
+          elevation: 2,
+        ),
+        cardTheme: CardThemeData(
+          elevation: 3,
+          margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: gsuBlue,
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+        ),
       ),
       initialRoute: AuthGate.routeName,
       routes: {
