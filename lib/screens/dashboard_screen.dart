@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../services/auth_service.dart';
+import 'tasks/tasks_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   static const String routeName = '/dashboard';
@@ -14,31 +15,37 @@ class DashboardScreen extends StatelessWidget {
         title: 'Tasks',
         subtitle: 'Add assignments and track deadlines',
         icon: Icons.checklist,
+        routeName: TasksScreen.routeName,
       ),
       _DashboardCard(
         title: 'Weekly Planner',
         subtitle: 'Generate study blocks using smart rules',
         icon: Icons.calendar_month,
+        routeName: null,
       ),
       _DashboardCard(
         title: 'Study Rooms',
         subtitle: 'View real-time room occupancy',
         icon: Icons.meeting_room,
+        routeName: null,
       ),
       _DashboardCard(
         title: 'Study Groups',
         subtitle: 'Create groups, chat, and schedule sessions',
         icon: Icons.groups,
+        routeName: null,
       ),
       _DashboardCard(
         title: 'Pomodoro Timer',
         subtitle: 'Sync shared study timer with group members',
         icon: Icons.timer,
+        routeName: null,
       ),
       _DashboardCard(
         title: 'Profile',
         subtitle: 'Manage your student profile and uploads',
         icon: Icons.person,
+        routeName: null,
       ),
     ];
 
@@ -50,6 +57,14 @@ class DashboardScreen extends StatelessWidget {
           IconButton(
             onPressed: () async {
               await AuthService().signOut();
+
+              if (context.mounted) {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  '/',
+                  (route) => false,
+                );
+              }
             },
             icon: const Icon(Icons.logout),
           ),
@@ -74,7 +89,16 @@ class DashboardScreen extends StatelessWidget {
               subtitle: Text(card.subtitle),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               onTap: () {
-                // navigation later
+                if (card.routeName == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('${card.title} coming in a later commit.'),
+                    ),
+                  );
+                  return;
+                }
+
+                Navigator.pushNamed(context, card.routeName!);
               },
             ),
           );
@@ -88,10 +112,12 @@ class _DashboardCard {
   final String title;
   final String subtitle;
   final IconData icon;
+  final String? routeName;
 
   _DashboardCard({
     required this.title,
     required this.subtitle,
     required this.icon,
+    required this.routeName,
   });
 }

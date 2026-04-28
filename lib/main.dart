@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'firebase_options.dart';
+import 'screens/auth/auth_gate.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/dashboard_screen.dart';
+import 'screens/tasks/tasks_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,10 +31,12 @@ class FocusNFlowApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      initialRoute: LoginScreen.routeName,
+      initialRoute: AuthGate.routeName,
       routes: {
+        AuthGate.routeName: (context) => const AuthGate(),
         LoginScreen.routeName: (context) => const LoginScreen(),
         DashboardScreen.routeName: (context) => const DashboardScreen(),
+        TasksScreen.routeName: (context) => const TasksScreen(),
       },
     );
   }
