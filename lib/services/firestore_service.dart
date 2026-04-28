@@ -6,7 +6,6 @@ import '../models/user_model.dart';
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  // USERS
   Future<void> createUserProfile(AppUser user) async {
     await _db.collection('users').doc(user.uid).set(user.toMap());
   }
@@ -17,7 +16,6 @@ class FirestoreService {
     });
   }
 
-  // TASKS
   Future<void> addTask(String uid, Task task) async {
     await _db
         .collection('users')
@@ -48,7 +46,6 @@ class FirestoreService {
         .delete();
   }
 
-  // STUDY PLANNER
   List<Task> generateStudyPlan(List<Task> tasks) {
     final now = DateTime.now();
 
@@ -71,7 +68,6 @@ class FirestoreService {
     return deadlineScore + effortScore + weightScore;
   }
 
-  // ROOMS
   Stream<QuerySnapshot<Map<String, dynamic>>> getStudyRooms() {
     return _db.collection('rooms').snapshots();
   }
@@ -104,11 +100,16 @@ class FirestoreService {
     });
   }
 
-  // GROUPS
   Future<void> createGroup(String name) async {
     await _db.collection('groups').add({
       'name': name,
       'createdAt': Timestamp.now(),
+      'timer': {
+        'remaining': 1500,
+        'isRunning': false,
+        'goal': 'Focus study session',
+        'updatedAt': Timestamp.now(),
+      },
     });
   }
 
@@ -127,8 +128,7 @@ class FirestoreService {
     });
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getMessages(
-      String groupId) {
+  Stream<QuerySnapshot<Map<String, dynamic>>> getMessages(String groupId) {
     return _db
         .collection('groups')
         .doc(groupId)
@@ -137,7 +137,6 @@ class FirestoreService {
         .snapshots();
   }
 
-  // SESSIONS
   Future<void> createSession({
     required String groupId,
     required String title,
@@ -154,13 +153,55 @@ class FirestoreService {
     });
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getSessions(
-      String groupId) {
+  Stream<QuerySnapshot<Map<String, dynamic>>> getSessions(String groupId) {
     return _db
         .collection('groups')
         .doc(groupId)
         .collection('sessions')
         .orderBy('time')
         .snapshots();
+  }
+
+  Future<void> startTimer(String groupId, int seconds) async {
+    await _db.collection('groups').doc(groupId).set({
+      'timer': {
+        'remaining': seconds,
+        'isRunning': true,
+        'updatedAt': Timestamp.now(),
+      }
+    }, SetOptions(merge: true));
+  }
+
+  Future<void> stopTimer(String groupId, int seconds) async {
+    await _db.collection('groups').doc(groupId).set({
+      'timer': {
+        'remaining': seconds,
+        'isRunning': false,
+        'updatedAt': Timestamp.now(),
+      }
+    }, SetOptions(merge: true));
+  }
+
+  Future<void> resetTimer(String groupId) async {
+    await _db.collection('groups').doc(groupId).set({
+      'timer': {
+        'remaining': 1500,
+        'isRunning': false,
+        'updatedAt': Timestamp.now(),
+      }
+    }, SetOptions(merge: true));
+  }
+
+  Future<void> updateTimerGoal(String groupId, String goal) async {
+    await _db.collection('groups').doc(groupId).set({
+      'timer': {
+        'goal': goal,
+        'updatedAt': Timestamp.now(),
+      }
+    }, SetOptions(merge: true));
+  }
+
+  Stream<DocumentSnapshot<Map<String, dynamic>>> getTimer(String groupId) {
+    return _db.collection('groups').doc(groupId).snapshots();
   }
 }
