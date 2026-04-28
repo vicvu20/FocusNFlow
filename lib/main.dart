@@ -6,6 +6,7 @@ import 'screens/auth/auth_gate.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/tasks/tasks_screen.dart';
+import 'screens/planner/planner_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,9 +27,7 @@ class FocusNFlowApp extends StatelessWidget {
       title: 'FocusNFlow',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.indigo,
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
         useMaterial3: true,
       ),
       initialRoute: AuthGate.routeName,
@@ -37,6 +36,7 @@ class FocusNFlowApp extends StatelessWidget {
         LoginScreen.routeName: (context) => const LoginScreen(),
         DashboardScreen.routeName: (context) => const DashboardScreen(),
         TasksScreen.routeName: (context) => const TasksScreen(),
+        PlannerScreen.routeName: (context) => const PlannerScreen(),
       },
     );
   }

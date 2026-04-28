@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../services/auth_service.dart';
 import 'tasks/tasks_screen.dart';
+import 'planner/planner_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   static const String routeName = '/dashboard';
@@ -21,7 +22,7 @@ class DashboardScreen extends StatelessWidget {
         title: 'Weekly Planner',
         subtitle: 'Generate study blocks using smart rules',
         icon: Icons.calendar_month,
-        routeName: null,
+        routeName: PlannerScreen.routeName,
       ),
       _DashboardCard(
         title: 'Study Rooms',
@@ -92,7 +93,7 @@ class DashboardScreen extends StatelessWidget {
                 if (card.routeName == null) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('${card.title} coming in a later commit.'),
+                      content: Text('${card.title} coming soon'),
                     ),
                   );
                   return;
