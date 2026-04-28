@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../services/firestore_service.dart';
+import 'session_screen.dart';
 
 class ChatScreen extends StatefulWidget {
   final String groupId;
@@ -33,6 +34,19 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Group Chat'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.calendar_month),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => SessionScreen(groupId: widget.groupId),
+                ),
+              );
+            },
+          )
+        ],
       ),
       body: Column(
         children: [
@@ -46,47 +60,24 @@ class _ChatScreenState extends State<ChatScreen> {
 
                 final messages = snapshot.data!.docs;
 
-                if (messages.isEmpty) {
-                  return const Center(child: Text('No messages yet'));
-                }
-
                 return ListView.builder(
-                  padding: const EdgeInsets.all(12),
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
-                    final message = messages[index];
-                    final data = message.data();
-
-                    return Card(
-                      child: ListTile(
-                        title: Text(data['text'] ?? ''),
-                      ),
-                    );
+                    final msg = messages[index].data();
+                    return ListTile(title: Text(msg['text']));
                   },
                 );
               },
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: controller,
-                    decoration: const InputDecoration(
-                      labelText: 'Message',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                IconButton(
-                  icon: const Icon(Icons.send),
-                  onPressed: _send,
-                ),
-              ],
-            ),
+          Row(
+            children: [
+              Expanded(child: TextField(controller: controller)),
+              IconButton(
+                icon: const Icon(Icons.send),
+                onPressed: _send,
+              ),
+            ],
           ),
         ],
       ),

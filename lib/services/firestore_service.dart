@@ -98,7 +98,7 @@ class FirestoreService {
     });
   }
 
-  // 🔥 GROUPS
+  // GROUPS
   Future<void> createGroup(String name) async {
     await _db.collection('groups').add({
       'name': name,
@@ -110,7 +110,6 @@ class FirestoreService {
     return _db.collection('groups').snapshots();
   }
 
-  // 🔥 CHAT
   Future<void> sendMessage(String groupId, String message) async {
     await _db
         .collection('groups')
@@ -129,6 +128,33 @@ class FirestoreService {
         .doc(groupId)
         .collection('messages')
         .orderBy('createdAt')
+        .snapshots();
+  }
+
+  // SESSIONS (calendar + reminders)
+  Future<void> createSession({
+    required String groupId,
+    required String title,
+    required DateTime time,
+  }) async {
+    await _db
+        .collection('groups')
+        .doc(groupId)
+        .collection('sessions')
+        .add({
+      'title': title,
+      'time': Timestamp.fromDate(time),
+      'createdAt': Timestamp.now(),
+    });
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getSessions(
+      String groupId) {
+    return _db
+        .collection('groups')
+        .doc(groupId)
+        .collection('sessions')
+        .orderBy('time')
         .snapshots();
   }
 }
