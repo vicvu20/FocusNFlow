@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../services/auth_service.dart';
+
 class DashboardScreen extends StatelessWidget {
   static const String routeName = '/dashboard';
 
@@ -44,6 +46,14 @@ class DashboardScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('FocusNFlow Dashboard'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () async {
+              await AuthService().signOut();
+            },
+            icon: const Icon(Icons.logout),
+          ),
+        ],
       ),
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
@@ -63,7 +73,9 @@ class DashboardScreen extends StatelessWidget {
               ),
               subtitle: Text(card.subtitle),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {},
+              onTap: () {
+                // navigation later
+              },
             ),
           );
         },
