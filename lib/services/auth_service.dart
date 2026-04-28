@@ -40,7 +40,9 @@ class AuthService {
         createdAt: Timestamp.now().toDate().toString(),
       );
 
-      await FirestoreService().createUserProfile(newUser);
+      await FirestoreService()
+          .createUserProfile(newUser)
+          .timeout(const Duration(seconds: 8));
     }
 
     return credential;
