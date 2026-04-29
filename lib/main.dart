@@ -11,6 +11,8 @@ import 'screens/tasks/tasks_screen.dart';
 import 'screens/planner/planner_screen.dart';
 import 'screens/rooms/rooms_screen.dart';
 import 'screens/groups/groups_screen.dart';
+import 'screens/profile/profile_screen.dart';
+import 'screens/timer/global_timer_screen.dart';
 import 'services/firestore_service.dart';
 
 Future<void> _firebaseBackgroundHandler(RemoteMessage message) async {}
@@ -108,6 +110,8 @@ class _FocusNFlowAppState extends State<FocusNFlowApp> {
         PlannerScreen.routeName: (context) => const PlannerScreen(),
         RoomsScreen.routeName: (context) => const RoomsScreen(),
         GroupsScreen.routeName: (context) => const GroupsScreen(),
+        ProfileScreen.routeName: (context) => const ProfileScreen(),
+        GlobalTimerScreen.routeName: (context) => const GlobalTimerScreen(),
       },
     );
   }

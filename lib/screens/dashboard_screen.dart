@@ -5,6 +5,8 @@ import 'tasks/tasks_screen.dart';
 import 'planner/planner_screen.dart';
 import 'rooms/rooms_screen.dart';
 import 'groups/groups_screen.dart';
+import 'timer/global_timer_screen.dart';
+import 'profile/profile_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   static const String routeName = '/dashboard';
@@ -40,15 +42,15 @@ class DashboardScreen extends StatelessWidget {
       ),
       _DashboardCard(
         title: 'Pomodoro Timer',
-        subtitle: 'Coming next',
+        subtitle: 'Access synchronized study timer',
         icon: Icons.timer,
-        routeName: null,
+        routeName: GlobalTimerScreen.routeName,
       ),
       _DashboardCard(
         title: 'Profile',
-        subtitle: 'Coming next',
+        subtitle: 'View student account information',
         icon: Icons.person,
-        routeName: null,
+        routeName: ProfileScreen.routeName,
       ),
     ];
 
@@ -125,14 +127,7 @@ class DashboardScreen extends StatelessWidget {
                 subtitle: Text(card.subtitle),
                 trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                 onTap: () {
-                  if (card.routeName == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('${card.title} coming soon')),
-                    );
-                    return;
-                  }
-
-                  Navigator.pushNamed(context, card.routeName!);
+                  Navigator.pushNamed(context, card.routeName);
                 },
               ),
             );
@@ -147,7 +142,7 @@ class _DashboardCard {
   final String title;
   final String subtitle;
   final IconData icon;
-  final String? routeName;
+  final String routeName;
 
   _DashboardCard({
     required this.title,
