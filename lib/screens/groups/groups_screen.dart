@@ -28,6 +28,10 @@ Future<void> _createGroup() async {
 
   await firestore.createGroup(groupName);
   controller.clear();
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(content: Text("Group created successfully.")),
+  );
 }
 
   @override
