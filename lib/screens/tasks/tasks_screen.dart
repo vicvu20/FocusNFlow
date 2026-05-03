@@ -78,19 +78,19 @@ class _TasksScreenState extends State<TasksScreen> {
                         decoration:
                             const InputDecoration(labelText: "Course"),
                       ),
-                      Row(
-                        children: [
-                          const Text("Effort"),
-                          Expanded(
-                            child: Slider(
-                              value: _effort.toDouble(),
-                              min: 1,
-                              max: 5,
-                              divisions: 4,
-                              label: _effort.toString(),
-                              onChanged: (value) {
-                                setState(() {
-                                  _effort = value.toInt();
+Row(
+  children: [
+    const Text("Weight"),
+    Expanded(
+      child: Slider(
+        value: _weight.toDouble(),
+        min: 1,
+        max: 5,
+        divisions: 4,
+        label: _weight.toString(),
+        onChanged: (value) {
+          setState(() {
+            _weight = value.toInt();
                                 });
                               },
                             ),
