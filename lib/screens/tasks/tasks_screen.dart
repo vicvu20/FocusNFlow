@@ -20,6 +20,7 @@ class _TasksScreenState extends State<TasksScreen> {
 
   int _effort = 1;
   int _weight = 1;
+  DateTime _dueDate = DateTime.now().add(const Duration(days: 3));
 
   void _addTask() async {
     final user = FirebaseAuth.instance.currentUser;
@@ -41,7 +42,7 @@ class _TasksScreenState extends State<TasksScreen> {
       id: '',
       title: title,
       course: course,
-      dueDate: DateTime.now().add(const Duration(days: 3)),
+      dueDate: _dueDate,
       effort: _effort,
       weight: _weight,
     );
@@ -54,6 +55,13 @@ class _TasksScreenState extends State<TasksScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Task added successfully")),
     );
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _courseController.dispose();
+    super.dispose();
   }
 
   @override
@@ -70,59 +78,89 @@ class _TasksScreenState extends State<TasksScreen> {
                   padding: const EdgeInsets.all(12),
                   child: Column(
                     children: [
-TextField(
-  controller: _titleController,
-  decoration: const InputDecoration(labelText: "Task Title"),
-),
-const SizedBox(height: 10),
+                      TextField(
+                        controller: _titleController,
+                        decoration: const InputDecoration(
+                          labelText: "Task Title",
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      TextField(
+                        controller: _courseController,
+                        decoration: const InputDecoration(
+                          labelText: "Course",
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              "Due: ${_dueDate.month}/${_dueDate.day}/${_dueDate.year}",
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              final picked = await showDatePicker(
+                                context: context,
+                                initialDate: _dueDate,
+                                firstDate: DateTime.now(),
+                                lastDate: DateTime.now().add(
+                                  const Duration(days: 365),
+                                ),
+                              );
 
-TextField(
-  controller: _courseController,
-  decoration: const InputDecoration(labelText: "Course"),
-),
-const SizedBox(height: 10),
-
-Row(
-  children: [
-    const Text("Effort"),
-    Expanded(
-      child: Slider(
-        value: _effort.toDouble(),
-        min: 1,
-        max: 5,
-        divisions: 4,
-        label: _effort.toString(),
-        onChanged: (value) {
-          setState(() {
-            _effort = value.toInt();
-          });
-        },
-      ),
-    ),
-  ],
-),
-const SizedBox(height: 10),
-
-Row(
-  children: [
-    const Text("Weight"),
-    Expanded(
-      child: Slider(
-        value: _weight.toDouble(),
-        min: 1,
-        max: 5,
-        divisions: 4,
-        label: _weight.toString(),
-        onChanged: (value) {
-          setState(() {
-            _weight = value.toInt();
-          });
-        },
-      ),
-    ),
-  ],
-),
-const SizedBox(height: 10),
+                              if (picked != null) {
+                                setState(() {
+                                  _dueDate = picked;
+                                });
+                              }
+                            },
+                            child: const Text("Pick Date"),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          const Text("Effort"),
+                          Expanded(
+                            child: Slider(
+                              value: _effort.toDouble(),
+                              min: 1,
+                              max: 5,
+                              divisions: 4,
+                              label: _effort.toString(),
+                              onChanged: (value) {
+                                setState(() {
+                                  _effort = value.toInt();
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          const Text("Weight"),
+                          Expanded(
+                            child: Slider(
+                              value: _weight.toDouble(),
+                              min: 1,
+                              max: 5,
+                              divisions: 4,
+                              label: _weight.toString(),
+                              onChanged: (value) {
+                                setState(() {
+                                  _weight = value.toInt();
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
                       ElevatedButton(
                         onPressed: _addTask,
                         child: const Text("Add Task"),
