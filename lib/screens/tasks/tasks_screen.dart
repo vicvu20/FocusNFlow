@@ -129,9 +129,31 @@ class _TasksScreenState extends State<TasksScreen> {
                             subtitle: Text(task.course),
                             trailing: IconButton(
                               icon: const Icon(Icons.delete),
-                              onPressed: () {
-                                _firestore.deleteTask(user.uid, task.id);
-                              },
+onPressed: () async {
+  final confirm = await showDialog<bool>(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text("Delete Task"),
+        content: const Text("Are you sure you want to delete this task?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text("Delete"),
+          ),
+        ],
+      );
+    },
+  );
+
+  if (confirm == true) {
+    _firestore.deleteTask(user.uid, task.id);
+  }
+},
                             ),
                           );
                         },
