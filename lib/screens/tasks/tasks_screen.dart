@@ -126,7 +126,9 @@ class _TasksScreenState extends State<TasksScreen> {
 
                           return ListTile(
                             title: Text(task.title),
-                            subtitle: Text(task.course),
+                            subtitle: Text(
+                            "${task.course} • Due: ${task.dueDate.month}/${task.dueDate.day}",
+                            ),
                             trailing: IconButton(
                               icon: const Icon(Icons.delete),
 onPressed: () async {
