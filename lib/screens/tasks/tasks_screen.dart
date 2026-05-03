@@ -25,10 +25,20 @@ class _TasksScreenState extends State<TasksScreen> {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
+    
+    final title = _titleController.text.trim();
+    final course = _courseController.text.trim();
+
+    if (title.isEmpty || course.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Please enter a task title and course.")),
+    );
+    return;
+    }
     final task = Task(
       id: '',
-      title: _titleController.text,
-      course: _courseController.text,
+      title: title,
+      course: course,
       dueDate: DateTime.now().add(const Duration(days: 3)),
       effort: _effort,
       weight: _weight,
