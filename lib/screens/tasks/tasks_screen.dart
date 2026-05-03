@@ -48,6 +48,10 @@ class _TasksScreenState extends State<TasksScreen> {
 
     _titleController.clear();
     _courseController.clear();
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Task added successfully")),
+    );
   }
 
   @override
