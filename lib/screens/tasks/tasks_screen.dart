@@ -25,16 +25,18 @@ class _TasksScreenState extends State<TasksScreen> {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
-    
     final title = _titleController.text.trim();
     final course = _courseController.text.trim();
 
     if (title.isEmpty || course.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Please enter a task title and course.")),
-    );
-    return;
+        const SnackBar(
+          content: Text("Please enter a task title and course."),
+        ),
+      );
+      return;
     }
+
     final task = Task(
       id: '',
       title: title,
@@ -48,7 +50,7 @@ class _TasksScreenState extends State<TasksScreen> {
 
     _titleController.clear();
     _courseController.clear();
-    
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Task added successfully")),
     );
@@ -68,16 +70,39 @@ class _TasksScreenState extends State<TasksScreen> {
                   padding: const EdgeInsets.all(12),
                   child: Column(
                     children: [
-                      TextField(
-                        controller: _titleController,
-                        decoration:
-                            const InputDecoration(labelText: "Task Title"),
-                      ),
-                      TextField(
-                        controller: _courseController,
-                        decoration:
-                            const InputDecoration(labelText: "Course"),
-                      ),
+TextField(
+  controller: _titleController,
+  decoration: const InputDecoration(labelText: "Task Title"),
+),
+const SizedBox(height: 10),
+
+TextField(
+  controller: _courseController,
+  decoration: const InputDecoration(labelText: "Course"),
+),
+const SizedBox(height: 10),
+
+Row(
+  children: [
+    const Text("Effort"),
+    Expanded(
+      child: Slider(
+        value: _effort.toDouble(),
+        min: 1,
+        max: 5,
+        divisions: 4,
+        label: _effort.toString(),
+        onChanged: (value) {
+          setState(() {
+            _effort = value.toInt();
+          });
+        },
+      ),
+    ),
+  ],
+),
+const SizedBox(height: 10),
+
 Row(
   children: [
     const Text("Weight"),
@@ -91,12 +116,13 @@ Row(
         onChanged: (value) {
           setState(() {
             _weight = value.toInt();
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
+          });
+        },
+      ),
+    ),
+  ],
+),
+const SizedBox(height: 10),
                       ElevatedButton(
                         onPressed: _addTask,
                         child: const Text("Add Task"),
@@ -110,13 +136,16 @@ Row(
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
                         return const Center(
-                            child: CircularProgressIndicator());
+                          child: CircularProgressIndicator(),
+                        );
                       }
 
                       final tasks = snapshot.data!;
 
                       if (tasks.isEmpty) {
-                        return const Center(child: Text("No tasks yet"));
+                        return const Center(
+                          child: Text("No tasks yet"),
+                        );
                       }
 
                       return ListView.builder(
@@ -126,39 +155,46 @@ Row(
 
                           return Card(
                             child: ListTile(
-                            title: Text(task.title),
-                            subtitle: Text(
-                            "${task.course} • Due: ${task.dueDate.month}/${task.dueDate.day}",
-                            ),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.delete),
-onPressed: () async {
-  final confirm = await showDialog<bool>(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text("Delete Task"),
-        content: const Text("Are you sure you want to delete this task?"),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text("Cancel"),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text("Delete"),
-          ),
-        ],
-      );
-    },
-  );
+                              title: Text(task.title),
+                              subtitle: Text(
+                                "${task.course} • Due: ${task.dueDate.month}/${task.dueDate.day}",
+                              ),
+                              trailing: IconButton(
+                                icon: const Icon(Icons.delete),
+                                onPressed: () async {
+                                  final confirm = await showDialog<bool>(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: const Text("Delete Task"),
+                                        content: const Text(
+                                          "Are you sure you want to delete this task?",
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.pop(context, false),
+                                            child: const Text("Cancel"),
+                                          ),
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.pop(context, true),
+                                            child: const Text("Delete"),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
 
-  if (confirm == true) {
-    _firestore.deleteTask(user.uid, task.id);
-  }
-},
+                                  if (confirm == true) {
+                                    _firestore.deleteTask(
+                                      user.uid,
+                                      task.id,
+                                    );
+                                  }
+                                },
+                              ),
                             ),
-                            ), 
                           );
                         },
                       );
