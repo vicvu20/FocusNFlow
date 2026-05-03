@@ -124,7 +124,8 @@ Row(
                         itemBuilder: (context, index) {
                           final task = tasks[index];
 
-                          return ListTile(
+                          return Card(
+                            child: ListTile(
                             title: Text(task.title),
                             subtitle: Text(
                             "${task.course} • Due: ${task.dueDate.month}/${task.dueDate.day}",
@@ -157,6 +158,7 @@ onPressed: () async {
   }
 },
                             ),
+                            ), 
                           );
                         },
                       );
