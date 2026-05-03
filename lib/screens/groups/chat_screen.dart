@@ -85,6 +85,11 @@ class _ChatScreenState extends State<ChatScreen> {
                     return Card(
                       child: ListTile(
                         title: Text(message['text'] ?? ''),
+                            subtitle: Text(
+                              message['createdAt'] != null
+                                  ? message['createdAt'].toDate().toString()
+                                : '',
+                        ),
                       ),
                     );
                   },
