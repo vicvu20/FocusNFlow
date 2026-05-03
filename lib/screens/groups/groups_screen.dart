@@ -16,12 +16,19 @@ class _GroupsScreenState extends State<GroupsScreen> {
   final FirestoreService firestore = FirestoreService();
   final TextEditingController controller = TextEditingController();
 
-  Future<void> _createGroup() async {
-    if (controller.text.trim().isEmpty) return;
+Future<void> _createGroup() async {
+  final groupName = controller.text.trim();
 
-    await firestore.createGroup(controller.text.trim());
-    controller.clear();
+  if (groupName.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Please enter a group name.")),
+    );
+    return;
   }
+
+  await firestore.createGroup(groupName);
+  controller.clear();
+}
 
   @override
   void dispose() {
